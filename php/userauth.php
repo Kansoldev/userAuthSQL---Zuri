@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 require_once "../config.php";
 
@@ -6,7 +7,19 @@ require_once "../config.php";
 function registerUser($fullnames, $email, $password, $gender, $country){
     //create a connection variable using the db function in config.php
     $conn = db();
+
    //check if user with this email already exist in the database
+    $stmt = $conn->prepare("INSERT INTO students (full_names, country, email, gender, password) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $fullnames, $country, $email, $gender, $password);
+
+    if ($stmt->execute()) {
+        header("refresh:0.5, url=../dashboard.php");
+        echo "<script>alert(('User Successfully registered'))</script>";
+        $_SESSION["username"] = $fullnames;
+    }
+
+    $stmt->close();
+    $conn->close();
 }
 
 
