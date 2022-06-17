@@ -7,10 +7,10 @@ switch(true){
     case isset($_POST['register']):
         //extract the $_POST array values for name, password and email
             $fullnames = $_POST['fullnames'];
-            $email = //
-            $password = //
-            $country = //
-            $gender = //   
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            $country = $_POST['country'];
+            $gender = $_POST['gender'];   
         registerUser($fullnames, $email, $password, $gender, $country);
         break;
 
