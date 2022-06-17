@@ -28,10 +28,32 @@ function loginUser($email, $password){
     //create a connection variable using the db function in config.php
     $conn = db();
 
-    echo "<h1 style='color: red'> LOG ME IN (IMPLEMENT ME) </h1>";
-    //open connection to the database and check if username exist in the database
-    //if it does, check if the password is the same with what is given
-    //if true then set user session for the user and redirect to the dasbboard
+    // open connection to the database and check if username exist in the database
+    $sql = "SELECT * FROM students WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+
+    // This just gives the information about the result that was found, it doesnt return the users data
+    $result = $stmt->get_result();
+
+    // Use this function to return the user data that was found in the $result variable
+    $user = $result->fetch_assoc();
+
+    if ($conn) {
+        if ($result->num_rows > 0) {
+            // Check if the password is the same with what is given
+            if ($password === $user["password"]) {
+                // if true then set user session for the user and redirect to the dasbboard
+                $_SESSION["username"] = $user["full_names"];
+                header("location: ../dashboard.php");
+            } else {
+                header("location: ../forms/login.html");
+            }
+        }  else {
+            header("location: ../forms/login.html");
+        }
+    }
 }
 
 
