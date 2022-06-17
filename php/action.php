@@ -15,8 +15,8 @@ switch(true){
         break;
 
     case isset($_POST['login']):
-            $email = //
-            $password = //
+            $email = $_POST['email'];
+            $password = $_POST['password'];
         loginUser($email, $password);
         break;
     case isset($_POST["reset"]):
