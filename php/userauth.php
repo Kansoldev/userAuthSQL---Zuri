@@ -60,9 +60,24 @@ function loginUser($email, $password){
 function resetPassword($email, $password){
     //create a connection variable using the db function in config.php
     $conn = db();
-    echo "<h1 style='color: red'>RESET YOUR PASSWORD (IMPLEMENT ME)</h1>";
+
     //open connection to the database and check if username exist in the database
-    //if it does, replace the password with $password given
+    $sql = "SELECT * FROM students WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($conn) {
+        if ($result->num_rows > 0) { // if it does, replace the password with $password given
+            $sql = "UPDATE students SET password = ? WHERE email = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ss", $password, $email);
+            $stmt->execute();
+        } else {
+            header("location: ../forms/resetpassword.html");
+        }
+    }
 }
 
 function getusers(){
