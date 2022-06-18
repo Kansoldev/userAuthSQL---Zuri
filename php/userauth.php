@@ -115,5 +115,13 @@ function getusers(){
 
  function deleteaccount($id){
      $conn = db();
+     
      //delete user with the given id from the database
+     $sql = "DELETE FROM students WHERE id = ?";
+     $stmt = $conn->prepare($sql);
+     $stmt->bind_param("s", $id);
+
+     if ($stmt->execute()) {
+        header("location: action.php?all=");
+     }
  }
