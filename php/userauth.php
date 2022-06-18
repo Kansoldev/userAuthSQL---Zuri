@@ -8,18 +8,30 @@ function registerUser($fullnames, $email, $password, $gender, $country){
     //create a connection variable using the db function in config.php
     $conn = db();
 
-   //check if user with this email already exist in the database
-    $stmt = $conn->prepare("INSERT INTO students (full_names, country, email, gender, password) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $fullnames, $country, $email, $gender, $password);
+    $sql = "SELECT * FROM students WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($stmt->execute()) {
-        header("refresh:0.5, url=../dashboard.php");
-        echo "<script>alert(('User Successfully registered'))</script>";
-        $_SESSION["username"] = $fullnames;
+    //check if user with this email already exist in the database
+    if ($result->num_rows > 0) {
+        header("refresh:0.5, url=../forms/register.html");
+        exit("User already exists");
+        $stmt->close();
+    } else {
+        $stmt = $conn->prepare("INSERT INTO students (full_names, country, email, gender, password) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $fullnames, $country, $email, $gender, $password);
+
+        if ($stmt->execute()) {
+            header("refresh:0.5, url=../dashboard.php");
+            echo "<script>alert(('User Successfully registered'))</script>";
+            $_SESSION["username"] = $fullnames;
+        }
+
+        $stmt->close();
+        $conn->close();
     }
-
-    $stmt->close();
-    $conn->close();
 }
 
 
