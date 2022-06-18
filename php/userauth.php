@@ -67,15 +67,22 @@ function resetPassword($email, $password){
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
 
     if ($conn) {
         if ($result->num_rows > 0) { // if it does, replace the password with $password given
             $sql = "UPDATE students SET password = ? WHERE email = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("ss", $password, $email);
-            $stmt->execute();
+            
+            if ($stmt->execute()) {
+                header("refresh:0.5, url=../dashboard.php");
+                echo "<script>alert(('Password successfully reset!'))</script>";
+                $_SESSION["username"] = $user["full_names"];
+            }
         } else {
-            header("location: ../forms/resetpassword.html");
+            header("refresh:0.5, url=../forms/resetpassword.html");
+            echo "<script>alert(('User does not exist'))</script>";
         }
     }
 }
@@ -115,7 +122,7 @@ function getusers(){
 
  function deleteaccount($id){
      $conn = db();
-     
+
      //delete user with the given id from the database
      $sql = "DELETE FROM students WHERE id = ?";
      $stmt = $conn->prepare($sql);
