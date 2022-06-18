@@ -103,10 +103,11 @@ function getusers(){
                 <form action='action.php' method='post'>
                 <input type='hidden' name='id'" .
                  "value=" . $data['id'] . ">".
-                "<td style='width: 150px'> <button type='submit', name='delete'> DELETE </button>".
+                "<td style='width: 150px'> <button type='submit', name='delete'> DELETE </button> </td>".
+                "</form>".
                 "</tr>";
         }
-        echo "</table></table></center></body></html>";
+        echo "</table></center></body></html>";
     }
     //return users from the database
     //loop through the users and display them on a table
